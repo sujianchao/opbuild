@@ -1,0 +1,201 @@
+#=================================================
+# https://github.com/P3TERX/Actions-OpenWrt
+# Description: Build OpenWrt using GitHub Actions
+# Lisence: MIT
+# Author: P3TERX
+# Blog: https://p3terx.com
+#=================================================
+
+name: Build OpenWrtx64
+
+on:
+#  release:
+#    types: [published]
+  push:
+#    branches:
+#      - master
+    paths:
+      - 'x64.sh'
+  schedule:
+    - cron: 0 3 * * 5
+#  watch:
+#    types: [started]
+
+env:
+  REPO_URL: https://github.com/openwrt/openwrt
+  REPO_BRANCH: master
+  CONFIG_FILE: .config
+  DIY_SH: x64.sh
+  SSH_ACTIONS: false
+  UPLOAD_BIN_DIR: true
+  GITHUB_REPO: jsda/opbuild
+  Release_TAG: x64
+  ARCH_TAG: x64
+  TZ: Asia/Shanghai
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout
+      uses: actions/checkout@master
+
+    - name: Initialization environment
+      env:
+        DEBIAN_FRONTEND: noninteractive
+      run: |
+        echo "Deleting files, please wait ..."
+        sudo rm -rf /usr/share/dotnet
+        docker rmi `docker images -q`
+        sudo -E apt-get -q purge azure-cli ghc* zulu* hhvm llvm* firefox google* dotnet* powershell openjdk* mysql* php*
+        sudo -E apt-get -qq autoremove --purge
+        sudo swapoff /swapfile
+        sudo rm -f /swapfile  /etc/apt/sources.list.d/*
+        sudo -E apt-get -qq update
+        sudo -E apt-get -qq install apt-utils debconf cvs build-essential asciidoc binutils \
+          bzip2 gawk gettext git libncurses5-dev patch libz-dev unzip zlib1g-dev ccache \
+          g++ bison flex autoconf automake autopoint make gcc subversion libtool sphinx-common \
+          mercurial sharutils ncurses-term git-core texinfo curl pkg-config xmlto libpcre3-dev \
+          libc-ares-dev libglib2.0-dev libgsasl7 libntlm0 libssl-dev libssl-doc libv8-dev \
+          msmtp nodejs p7zip p7zip-full gcc-multilib wget nano lib32gcc1 expat libexpat1-dev \
+          uglifyjs qemu-utils doxygen gettext bash zip bc fastjar util-linux libgtk2.0-dev \
+          intltool genisoimage python3-dev python3-pip rsync ruby xsltproc libboost-dev \
+          libboost-tools-dev libxml-parser-perl libusb-dev bcc bzr ecj openjdk-11-jdk \
+          quilt openssl libssh2-1-dev libgnutls28-dev nettle-dev libgmp-dev libsqlite3-dev \
+          sqlite3 libgpg-error-dev libxml2-dev autotools-dev dpkg-dev gcc-mingw-w64-x86-64 g++-mingw-w64-x86-64 \
+          lzip libcppunit-dev libcurl4-openssl-dev libevent-dev ca-certificates libc6-dev-i386 \
+          bin86 g++-multilib lib32z1-dev libz3-dev libgcrypt20-dev binutils-avr mt-st docutils-common \
+          manpages-dev libunistring-dev libelf-dev device-tree-compiler upx golang
+        sudo -E apt-get -qq clean
+
+    - name: Clone source code
+      run: git clone --depth 1 $REPO_URL -b $REPO_BRANCH openwrt
+
+    - name: Update feeds
+      run: cd openwrt && ./scripts/feeds update -a
+
+    - name: Install feeds
+      run: cd openwrt && ./scripts/feeds install -a
+
+    - name: Load custom configuration
+      run: |
+        [ -e files ] && mv files openwrt/files
+        [ -e $CONFIG_FILE ] && mv $CONFIG_FILE openwrt/.config
+        chmod +x $DIY_SH
+        cd openwrt
+        ../$DIY_SH
+        make defconfig
+
+    - name: SSH connection to Actions
+      uses: jsda/debugger-action@master
+      if: env.SSH_ACTIONS == 'true'
+
+    - name: Download package
+      run: |
+        cd openwrt && make download -j8
+        find dl -size -1024c -exec ls -l {} \;
+        find dl -size -1024c -exec rm -f {} \;
+
+    - name: Compile the firmware
+      id: compile
+      run: |
+        cd openwrt
+        echo -e "$(nproc) thread compile"
+        make -j$(nproc) || make -j1 V=s
+
+    - name: Organize files
+      id: organize
+      if: success()
+      run: |
+        echo "======================="
+        echo "======================="
+        echo "Space usage:"
+        echo "======================="
+        echo "$(df -h)"
+        echo "======================="
+        find openwrt/bin/targets/*/*/* -maxdepth 0 -name "*combined-squashfs*" | xargs -i cp -a {} ./ && zip -9 -r combined-squashfs.zip ./*combined-squashfs* && echo "combined-squashfs拷贝成功" || echo "combined-squashfs拷贝失败"
+        find openwrt/bin/targets/*/*/* -maxdepth 0 -name "*generic-rootfs*" | xargs -i cp -a {} ./ && zip -9 -r generic-rootfs.zip ./*generic-rootfs* && echo "generic-rootfs拷贝成功" || echo "generic-rootfs拷贝失败"
+        find openwrt/bin/targets/*/*/* -maxdepth 0 -name "*sha256sums*" | xargs -i cp -a {} ./ && zip -9 -r sha256sums.zip ./*sha256sums* && echo "sha256sums拷贝成功" || echo "sha256sums拷贝失败"
+        echo "::set-env name=DATE::$(date "+%Y%m%d-%H%M")"
+
+    - name: Upload Packages
+      id: upload_packages
+      if: success()
+      env:
+        GITHUB_TOKEN: ${{ secrets.TOKEN }}
+      run: |
+        cd openwrt/bin/packages/*/base
+        git init
+        git config user.name "actions"
+        git config user.email "actions@github.com"
+        git add .
+        git commit -m "$DATE-$ARCH_TAG"
+        git push --force --quiet "https://$GITHUB_TOKEN@github.com/$GITHUB_REPO.git" HEAD:packages/$ARCH_TAG
+
+    - name: Upload Targets
+      id: upload_targets
+      if: success()
+      env:
+        GITHUB_TOKEN: ${{ secrets.TOKEN }}
+      run: |
+        cd openwrt/bin/targets/*/*
+        git init
+        git config user.name "actions"
+        git config user.email "actions@github.com"
+        git add .
+        git commit -m "$DATE-$Release_TAG"
+        git push --force --quiet "https://$GITHUB_TOKEN@github.com/$GITHUB_REPO.git" HEAD:targets/$Release_TAG
+
+    - name: Get current tag
+      id: tag
+      if: success()
+      run: echo "::set-output name=tag::$DATE-$Release_TAG"
+
+    - name: Create Release
+      id: create_release
+      if: success()
+      uses: actions/create-release@master
+      env:
+        GITHUB_TOKEN: ${{ secrets.TOKEN }}
+      with:
+        tag_name: ${{steps.tag.outputs.tag}}
+        release_name: ${{steps.tag.outputs.tag}}
+        draft: false
+        prerelease: false
+
+    - name: Upload combined-squashfs
+      id: upload-combined-squashfs
+      if: success()
+      uses: actions/upload-release-asset@master
+      env:
+        GITHUB_TOKEN: ${{ secrets.TOKEN }}
+      with:
+        upload_url: ${{ steps.create_release.outputs.upload_url }}
+        asset_path: ./combined-squashfs.zip
+        asset_name: combined-squashfs.zip
+        asset_content_type: application/zip
+
+    - name: Upload generic-rootfs
+      id: upload-generic-rootfs
+      if: success()
+      uses: actions/upload-release-asset@master
+      env:
+        GITHUB_TOKEN: ${{ secrets.TOKEN }}
+      with:
+        upload_url: ${{ steps.create_release.outputs.upload_url }}
+        asset_path: ./generic-rootfs.zip
+        asset_name: generic-rootfs.zip
+        asset_content_type: application/zip
+
+    - name: Upload sha256sums
+      id: upload-sha256sums
+      if: success()
+      uses: actions/upload-release-asset@master
+      env:
+        GITHUB_TOKEN: ${{ secrets.TOKEN }}
+      with:
+        upload_url: ${{ steps.create_release.outputs.upload_url }}
+        asset_path: ./sha256sums.zip
+        asset_name: sha256sums.zip
+        asset_content_type: application/zip
