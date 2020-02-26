@@ -140,6 +140,7 @@ jobs:
         GITHUB_TOKEN: ${{ secrets.TOKEN }}
       run: |
         cd openwrt/bin/targets/*/*
+        rm -rf packages
         git init
         git config user.name "actions"
         git config user.email "actions@github.com"
