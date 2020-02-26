@@ -29,7 +29,7 @@ env:
   SSH_ACTIONS: false
   UPLOAD_BIN_DIR: true
   GITHUB_REPO: jsda/opbuild
-  Release_TAG: x64
+  Targets_TAG: x64
   ARCH_TAG: x64
   TZ: Asia/Shanghai
 
@@ -144,13 +144,13 @@ jobs:
         git config user.name "actions"
         git config user.email "actions@github.com"
         git add .
-        git commit -m "$DATE-$Release_TAG"
-        git push --force --quiet "https://$GITHUB_TOKEN@github.com/$GITHUB_REPO.git" HEAD:targets/$Release_TAG
+        git commit -m "$DATE-$Targets_TAG"
+        git push --force --quiet "https://$GITHUB_TOKEN@github.com/$GITHUB_REPO.git" HEAD:targets/$Targets_TAG
 
     - name: Get current tag
       id: tag
       if: success()
-      run: echo "::set-output name=tag::$DATE-$Release_TAG"
+      run: echo "::set-output name=tag::$DATE-$Targets_TAG"
 
     - name: Create Release
       id: create_release
