@@ -17,7 +17,7 @@ opkg print-architecture | awk '{print $2}'
 
 Then, check your architecture in all branches and add the following line to `/etc/opkg.conf`.
 ```
-src/gz opbuild https://github.com/jsda/opbuild/raw/{architecture}
+src/gz opbuild https://github.com/jsda/opbuild/raw/packages/{architecture}
 ```
 Then install what you want.
 ```

@@ -29,8 +29,8 @@ env:
   SSH_ACTIONS: false
   UPLOAD_BIN_DIR: true
   GITHUB_REPO: jsda/opbuild
-  Targets_TAG: x64
-  ARCH_TAG: x64
+  Targets_TAG: x86_64
+  ARCH_TAG: x86_64
   TZ: Asia/Shanghai
 
 jobs:
