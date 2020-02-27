@@ -20,10 +20,7 @@ sed -i "s/bbr '0'/bbr '1'/g" package/*/luci-app-flowoffload/root/etc/config/flow
 sed -i "s/flow_offloading_hw '0'/flow_offloading_hw '1'/g" package/*/luci-app-flowoffload/root/etc/config/flowoffload
 #包版本更新
 getversion(){
-if !(basename $(curl -Ls -o /dev/null -w %{url_effective} https://github.com/$1/releases/latest) | grep -o -E "[0-9.]+")
-then
-  git ls-remote --tags git://github.com/$1 | cut -d/ -f3- | sort -t. -nk1,2 -k3 | awk '/^[^{]*$/{version=$1}END{print version}' | grep -o -E "[0-9.]+"
-fi
+curl -fsSL https://api.github.com/repos/$1/releases | grep -o '"tag_name": ".*"' | head -n 1 | sed 's/"//g;s/v//g' | sed 's/tag_name: //g' | sed 's/release-//g'
 }
 echo "V2ray v$(getversion v2ray/v2ray-core)"
 sed -i "s/PKG_VERSION:=.*/PKG_VERSION:=$(getversion v2ray/v2ray-core)/g" package/lean/v2ray/Makefile
