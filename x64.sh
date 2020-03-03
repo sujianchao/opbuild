@@ -47,6 +47,7 @@ CONFIG_TARGET_ROOTFS_TARGZ=y
 CONFIG_PACKAGE_kmod-kvm-amd=y
 CONFIG_PACKAGE_kmod-kvm-intel=y
 CONFIG_PACKAGE_kmod-kvm-x86=y
+CONFIG_TESTING_KERNEL=y
 #
 #OpenWrt中文包
 CONFIG_LUCI_LANG_zh_Hans=y
@@ -119,6 +120,7 @@ CONFIG_PACKAGE_luci-app-v2ray-server=y
 CONFIG_PACKAGE_luci-app-haproxy-tcp=y
 CONFIG_PACKAGE_luci-app-ipsec-vpnd=y
 CONFIG_PACKAGE_luci-app-mwan3helper=y
+CONFIG_PACKAGE_luci-app-nps=y
 CONFIG_PACKAGE_luci-app-passwall=y
 CONFIG_PACKAGE_luci-app-passwall_INCLUDE_ipt2socks=y
 CONFIG_PACKAGE_luci-app-passwall_INCLUDE_Shadowsocks=y
@@ -176,6 +178,7 @@ CONFIG_PACKAGE_ddns-scripts_no-ip_com=y
 CONFIG_PACKAGE_ddns-scripts_nsupdate=y
 # CONFIG_PACKAGE_dnsmasq is not set
 CONFIG_PACKAGE_dnsmasq-full=y
+CONFIG_PACKAGE_bind-dig=y
 CONFIG_PACKAGE_htop=y
 CONFIG_PACKAGE_ip-full=y
 CONFIG_PACKAGE_ipset=y
