@@ -69,10 +69,16 @@ EOF
 # EOF
 # IPv6支持:
 cat >> .config <<EOF
-CONFIG_PACKAGE_dnsmasq_full_dhcpv6=y
+# IPv6支持:
+CONFIG_IPV6=y
+CONFIG_KERNEL_IPV6=y
 CONFIG_PACKAGE_ip6tables=y
-CONFIG_PACKAGE_iptables-mod-extra=y
-CONFIG_PACKAGE_ipv6helper=y
+CONFIG_PACKAGE_odhcp6c=y
+CONFIG_PACKAGE_odhcpd-ipv6only=y
+CONFIG_PACKAGE_kmod-ip6tables=y
+CONFIG_PACKAGE_kmod-nf-ipt6=y
+CONFIG_PACKAGE_kmod-nf-conntrack6=y
+CONFIG_PACKAGE_luci-proto-ipv6=y
 EOF
 # 多文件系统支持:
 # cat >> .config <<EOF
@@ -84,13 +90,11 @@ EOF
 # CONFIG_PACKAGE_kmod-fs-squashfs=y
 # EOF
 # USB3.0支持:
-# cat >> .config <<EOF
-# CONFIG_PACKAGE_kmod-usb-ohci=y
-# CONFIG_PACKAGE_kmod-usb-ohci-pci=y
-# CONFIG_PACKAGE_kmod-usb2=y
-# CONFIG_PACKAGE_kmod-usb2-pci=y
-# CONFIG_PACKAGE_kmod-usb3=y
-# EOF
+cat >> .config <<EOF
+CONFIG_PACKAGE_kmod-usb2=y
+CONFIG_PACKAGE_kmod-usb2-pci=y
+CONFIG_PACKAGE_kmod-usb3=y
+EOF
 # 常用LuCI插件选择:
 cat >> .config <<EOF
 CONFIG_PACKAGE_luci-app-accesscontrol=y
