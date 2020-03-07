@@ -104,6 +104,7 @@ CONFIG_PACKAGE_luci-app-advanced-reboot=y
 CONFIG_PACKAGE_luci-app-autoreboot=y
 CONFIG_PACKAGE_luci-app-banip=y
 CONFIG_PACKAGE_luci-app-commands=y
+CONFIG_PACKAGE_luci-app-diag-core=y
 CONFIG_PACKAGE_luci-app-filetransfer=y
 CONFIG_PACKAGE_luci-app-firewall=y
 CONFIG_PACKAGE_luci-app-nlbwmon=y
@@ -122,8 +123,10 @@ CONFIG_PACKAGE_luci-app-ssr-plus_INCLUDE_V2ray_plugin=y
 CONFIG_PACKAGE_luci-app-flowoffload=y
 CONFIG_PACKAGE_luci-app-v2ray-server=y
 CONFIG_PACKAGE_luci-app-haproxy-tcp=y
+CONFIG_PACKAGE_strongswan=y
 CONFIG_PACKAGE_luci-app-ipsec-vpnd=y
 CONFIG_PACKAGE_luci-app-mwan3helper=y
+CONFIG_PACKAGE_luci-app-syncdial=y
 CONFIG_PACKAGE_luci-app-nps=y
 CONFIG_PACKAGE_luci-app-passwall=y
 CONFIG_PACKAGE_luci-app-passwall_INCLUDE_ipt2socks=y
@@ -143,7 +146,7 @@ CONFIG_PACKAGE_luci-app-passwall_INCLUDE_v2ray-plugin=y
 CONFIG_PACKAGE_luci-app-passwall_INCLUDE_simple-obfs=y
 CONFIG_PACKAGE_dnsforwarder=y
 CONFIG_PACKAGE_luci-app-statistics=y
-#CONFIG_PACKAGE_luci-app-ttyd=y
+CONFIG_PACKAGE_luci-app-ttyd=y
 CONFIG_PACKAGE_luci-app-uhttpd=y
 #CONFIG_PACKAGE_luci-app-unblockmusic=y
 CONFIG_PACKAGE_luci-app-upnp=y
@@ -170,6 +173,7 @@ CONFIG_PACKAGE_luci-theme-bootstrap=y
 EOF
 # 常用软件包:
 cat >> .config <<EOF
+CONFIG_PACKAGE_automount=y
 CONFIG_PACKAGE_default-settings=y
 CONFIG_PACKAGE_luci-app-ddns=y
 CONFIG_PACKAGE_ddns-scripts=y
@@ -207,6 +211,6 @@ EOF
 #
 # 取消编译VMware镜像以及镜像填充 (不要删除被缩进的注释符号):
 cat >> .config <<EOF
-#CONFIG_VDI_IMAGES=y
-#CONFIG_VMDK_IMAGES=y
+CONFIG_VDI_IMAGES=y
+CONFIG_VMDK_IMAGES=y
 EOF
