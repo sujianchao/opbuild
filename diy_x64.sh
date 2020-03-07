@@ -173,7 +173,7 @@ CONFIG_PACKAGE_luci-theme-bootstrap=y
 EOF
 # 常用软件包:
 cat >> .config <<EOF
-CONFIG_PACKAGE_automount=y
+#CONFIG_PACKAGE_automount=y
 CONFIG_PACKAGE_default-settings=y
 CONFIG_PACKAGE_luci-app-ddns=y
 CONFIG_PACKAGE_ddns-scripts=y
