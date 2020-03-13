@@ -11,8 +11,8 @@ name: Build OpenWrtx64
 on:
 #  release:
 #    types: [published]
-  push:
-    branches:
+#  push:
+#    branches:
 #      - master
 #    paths:
 #      - 'diy_x64.sh'
