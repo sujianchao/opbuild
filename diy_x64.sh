@@ -7,7 +7,7 @@ git clone https://github.com/jsda/opdiy.git ../opdiy && mv -f ../opdiy/{lean,diy
 #aria2 patch
 #mv -f ../opdiy/patches/aria2/patches feeds/packages/net/aria2 && echo "aria2 patch添加成功" || echo "aria2 patch添加失败"
 #adbyby规则更新
-wget -O- https://easylist-downloads.adblockplus.org/easylistchina+easylist.txt | grep ^\|\|[^\*]*\^$ | sed -e 's:||:address\=\/:' -e 's:\^:/0\.0\.0\.0:' > /tmp/dnsmasq.adblock && rm -rf package/lean/luci-app-adbyby-plus/root/usr/share/adbyby/dnsmasq.adblock && mv /tmp/dnsmasq.adblock package/lean/luci-app-adbyby-plus/root/usr/share/adbyby/dnsmasq.adblock && echo "Adblock Plus Host List更新成功" || echo "Adblock Plus Host List更新失败"
+#wget -O- https://easylist-downloads.adblockplus.org/easylistchina+easylist.txt | grep ^\|\|[^\*]*\^$ | sed -e 's:||:address\=\/:' -e 's:\^:/0\.0\.0\.0:' > /tmp/dnsmasq.adblock && rm -rf package/lean/luci-app-adbyby-plus/root/usr/share/adbyby/dnsmasq.adblock && mv /tmp/dnsmasq.adblock package/lean/luci-app-adbyby-plus/root/usr/share/adbyby/dnsmasq.adblock && echo "Adblock Plus Host List更新成功" || echo "Adblock Plus Host List更新失败"
 wget -O- https://adbyby.coding.net/p/xwhyc-rules/d/xwhyc-rules/git/raw/master/lazy.txt > /tmp/lazy.txt && rm -rf package/lean/adbyby/files/data/lazy.txt && mv /tmp/lazy.txt package/lean/adbyby/files/data/lazy.txt && echo "Lazy Rule更新成功" || echo "Lazy Rule更新失败"
 wget -O- https://adbyby.coding.net/p/xwhyc-rules/d/xwhyc-rules/git/raw/master/video.txt > /tmp/video.txt && rm -rf package/lean/adbyby/files/data/video.txt && mv /tmp/video.txt package/lean/adbyby/files/data/video.txt && echo "Video Rule更新成功" || echo "Video Rule更新失败"
 #更改default-settings
