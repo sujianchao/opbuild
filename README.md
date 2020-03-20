@@ -8,6 +8,13 @@ Build OpenWrt using GitHub Actions
 
 [GitHub Actions Group](https://t.me/GitHub_Actions) | [GitHub Actions Channel](https://t.me/GitHub_Actions_Channel)
 
+## 固件默认设置
+IP地址：192.168.1.1
+账号：root
+密码：password
+
+默认配置好DNS，AdGuardHome+Dnsforwarder组合，前者用来加密解析和分流dns，后者用来缓存。xxr＋可以设置dns为其它5335端口。
+
 ## 安装软件包
 
 You can use the following command to get architecture.

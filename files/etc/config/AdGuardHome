@@ -1,0 +1,18 @@
+
+config AdGuardHome 'AdGuardHome'
+	option httpport '3000'
+	option logfile '/tmp/AdGuardHome.log'
+	option verbose '0'
+	option binpath '/usr/bin/AdGuardHome/AdGuardHome'
+	option waitonboot '1'
+	option backupfile 'filters'
+	option configpath '/etc/AdGuardHome/AdGuardHome.yaml'
+	option workdir '/usr/bin/AdGuardHome'
+	option backupwdpath '/etc/AdGuardHome'
+	option ucitracktest '1'
+	option enabled '1'
+	option redirect 'none'
+	list old_redirect 'none'
+	list old_port '5333'
+	list old_enabled '1'
+

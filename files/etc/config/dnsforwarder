@@ -1,0 +1,22 @@
+
+config arguments
+	option dnsmasq '1'
+	option mode 'all'
+	option addr '127.0.0.1:5335'
+	option enabled '1'
+
+config config
+	option cache 'true'
+	option domain_statistic 'false'
+	option block_ipv6 'true'
+	option cache_ignore 'true'
+	option gfw 'false'
+	list udp_group '127.0.0.1:5333 * on'
+	list cache_control '* fixed 86000'
+	option block_negative_resp 'false'
+	option cache_size '1024000'
+	option log 'true'
+	option log_size '102400'
+	list udp_local '127.0.0.1:5054'
+	list tcp_group '8.8.8.8 * on'
+

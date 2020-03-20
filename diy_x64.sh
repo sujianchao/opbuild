@@ -7,7 +7,7 @@ git clone https://github.com/jsda/opdiy.git ../opdiy && mv -f ../opdiy/{lean,diy
 #aria2 patch
 #mv -f ../opdiy/patches/aria2/patches feeds/packages/net/aria2 && echo "aria2 patch添加成功" || echo "aria2 patch添加失败"
 #adbyby规则更新
-#wget -O- https://easylist-downloads.adblockplus.org/easylistchina+easylist.txt | grep ^\|\|[^\*]*\^$ | sed -e 's:||:address\=\/:' -e 's:\^:/0\.0\.0\.0:' > /tmp/dnsmasq.adblock && rm -rf package/lean/luci-app-adbyby-plus/root/usr/share/adbyby/dnsmasq.adblock && mv /tmp/dnsmasq.adblock package/lean/luci-app-adbyby-plus/root/usr/share/adbyby/dnsmasq.adblock && echo "Adblock Plus Host List更新成功" || echo "Adblock Plus Host List更新失败"
+wget -O- https://easylist-downloads.adblockplus.org/easylistchina+easylist.txt | grep ^\|\|[^\*]*\^$ | sed -e 's:||:address\=\/:' -e 's:\^:/0\.0\.0\.0:' > /tmp/dnsmasq.adblock && rm -rf package/lean/luci-app-adbyby-plus/root/usr/share/adbyby/dnsmasq.adblock && mv /tmp/dnsmasq.adblock package/lean/luci-app-adbyby-plus/root/usr/share/adbyby/dnsmasq.adblock && echo "Adblock Plus Host List更新成功" || echo "Adblock Plus Host List更新失败"
 wget -O- https://adbyby.coding.net/p/xwhyc-rules/d/xwhyc-rules/git/raw/master/lazy.txt > /tmp/lazy.txt && rm -rf package/lean/adbyby/files/data/lazy.txt && mv /tmp/lazy.txt package/lean/adbyby/files/data/lazy.txt && echo "Lazy Rule更新成功" || echo "Lazy Rule更新失败"
 wget -O- https://adbyby.coding.net/p/xwhyc-rules/d/xwhyc-rules/git/raw/master/video.txt > /tmp/video.txt && rm -rf package/lean/adbyby/files/data/video.txt && mv /tmp/video.txt package/lean/adbyby/files/data/video.txt && echo "Video Rule更新成功" || echo "Video Rule更新失败"
 #更改default-settings
@@ -33,7 +33,12 @@ rm -rf  AdGuardHome*.tar.gz AdGuardHome/{*.txt,*.md}
 chmod +x AdGuardHome/AdGuardHome
 mkdir -p files/usr/bin
 mv -f AdGuardHome files/usr/bin
-echo "/etc/AdGuardHome" >>  package/base-files/files/etc/sysupgrade.conf
+#AdGuardHome配置
+wget https://raw.githubusercontent.com/jsda/opdiy/master/config/AdGuardHome/AdGuardHome.yaml
+mkdir -p files/etc/AdGuardHome
+mv AdGuardHome.yaml files/etc/AdGuardHome
+#备份特定文件
+#echo "/etc/AdGuardHome" >>  package/base-files/files/etc/sysupgrade.conf
 #中文包修正
 ../convert_translation.sh
 # 编译x64固件:
@@ -208,7 +213,7 @@ CONFIG_PACKAGE_virtio-console-helper=y
 CONFIG_PACKAGE_vnstat=y
 CONFIG_PACKAGE_vnstati=y
 CONFIG_PACKAGE_openssh-sftp-server=y
-CONFIG_PACKAGE_dnscrypt-proxy2=y
+#CONFIG_PACKAGE_dnscrypt-proxy2=y
 EOF
 # 取消编译VMware镜像以及镜像填充 (不要删除被缩进的注释符号):
 cat >> .config <<EOF
