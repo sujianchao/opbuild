@@ -208,6 +208,7 @@ CONFIG_PACKAGE_virtio-console-helper=y
 CONFIG_PACKAGE_vnstat=y
 CONFIG_PACKAGE_vnstati=y
 CONFIG_PACKAGE_openssh-sftp-server=y
+CONFIG_PACKAGE_dnscrypt-proxy2=y
 EOF
 # 取消编译VMware镜像以及镜像填充 (不要删除被缩进的注释符号):
 cat >> .config <<EOF
