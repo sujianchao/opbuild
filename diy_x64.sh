@@ -102,12 +102,14 @@ CONFIG_PACKAGE_kmod-usb3=y
 EOF
 # 常用LuCI插件选择:
 cat >> .config <<EOF
+
 CONFIG_PACKAGE_luci-app-accesscontrol=y
 CONFIG_PACKAGE_luci-app-adbyby-plus=y
 CONFIG_PACKAGE_luci-app-adguardhome=y
 CONFIG_PACKAGE_luci-app-advanced-reboot=y
 CONFIG_PACKAGE_luci-app-autoreboot=y
 CONFIG_PACKAGE_luci-app-banip=y
+CONFIG_PACKAGE_luci-base=y
 CONFIG_PACKAGE_luci-app-commands=y
 CONFIG_PACKAGE_luci-app-cpufreq=y
 CONFIG_PACKAGE_luci-app-diag-core=y
@@ -157,10 +159,11 @@ CONFIG_PACKAGE_luci-app-uhttpd=y
 #CONFIG_PACKAGE_luci-app-unblockmusic=y
 CONFIG_PACKAGE_luci-app-upnp=y
 CONFIG_PACKAGE_luci-app-vlmcsd=y
-CONFIG_PACKAGE_luci-app-vnstat=y
+CONFIG_PACKAGE_luci-app-vnstat2=y
 CONFIG_PACKAGE_luci-app-wol=y
+CONFIG_PACKAGE_luci-app-netdata=y
+CONFIG_PACKAGE_luci-app-wireguard=y
 # CONFIG_PACKAGE_luci-app-xlnetacc=y
-CONFIG_PACKAGE_luci-base=y
 # CONFIG_PACKAGE_luci-app-aria2=y
 # CONFIG_PACKAGE_luci-app-baidupcs-web=y
 # CONFIG_PACKAGE_luci-app-docker=y
@@ -210,10 +213,9 @@ CONFIG_PACKAGE_unzip=y
 CONFIG_PACKAGE_zip=y
 CONFIG_PACKAGE_xz-utils=y
 CONFIG_PACKAGE_virtio-console-helper=y
-CONFIG_PACKAGE_vnstat=y
-CONFIG_PACKAGE_vnstati=y
+CONFIG_PACKAGE_vnstat2=y
+CONFIG_PACKAGE_vnstati2=y
 CONFIG_PACKAGE_openssh-sftp-server=y
-#CONFIG_PACKAGE_dnscrypt-proxy2=y
 EOF
 # 取消编译VMware镜像以及镜像填充 (不要删除被缩进的注释符号):
 cat >> .config <<EOF
