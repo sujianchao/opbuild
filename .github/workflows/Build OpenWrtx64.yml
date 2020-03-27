@@ -103,7 +103,7 @@ jobs:
         cd openwrt
         echo -e "$(nproc) thread compile"
         make -j$(nproc) || make -j1 V=s
-        rm -rf openwrt/bin/targets/*/*/packages
+        rm -rf bin/targets/*/*/packages
 
     - name: Organize files
       id: organize
