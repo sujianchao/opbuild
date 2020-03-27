@@ -17,7 +17,7 @@ on:
 #    paths:
 #      - 'diy_x64.sh'
   schedule:
-    - cron: 0 3 * * 5
+    - cron: 0 9 * * 5
 #  watch:
 #    types: [started]
 
