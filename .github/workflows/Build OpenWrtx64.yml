@@ -103,20 +103,22 @@ jobs:
         cd openwrt
         echo -e "$(nproc) thread compile"
         make -j$(nproc) || make -j1 V=s
+        rm -rf openwrt/bin/targets/*/*/packages
 
     - name: Organize files
       id: organize
       if: success()
       run: |
         echo "======================="
-        echo "======================="
         echo "Space usage:"
         echo "======================="
         echo "$(df -h)"
         echo "======================="
-        find openwrt/bin/targets/*/*/* -maxdepth 0 -name "*combined-squashfs*" | xargs -i cp -a {} ./ && zip -9 -r combined-squashfs.zip ./*combined-squashfs* && echo "combined-squashfs拷贝成功" || echo "combined-squashfs拷贝失败"
-        find openwrt/bin/targets/*/*/* -maxdepth 0 -name "*generic-rootfs*" | xargs -i cp -a {} ./ && zip -9 -r generic-rootfs.zip ./*generic-rootfs* && echo "generic-rootfs拷贝成功" || echo "generic-rootfs拷贝失败"
-        find openwrt/bin/targets/*/*/* -maxdepth 0 -name "*sha256sums*" | xargs -i cp -a {} ./ && zip -9 -r sha256sums.zip ./*sha256sums* && echo "sha256sums拷贝成功" || echo "sha256sums拷贝失败"
+        echo "$(ls -fl openwrt/bin/targets/*/*/*)"
+        echo "======================="
+        find openwrt/bin/targets/*/*/* -maxdepth 0 -name "*generic-squashfs-combined.img.gz" | xargs -i cp -a {} ./ && zip -9 -r generic-squashfs-combined.zip ./*generic-squashfs-combined.img.gz && echo "generic-squashfs-combined.img.gz拷贝成功" || echo "generic-squashfs-combined.img.gz拷贝失败"
+        find openwrt/bin/targets/*/*/* -maxdepth 0 -name "*rootfs.tar.gz" | xargs -i cp -a {} ./ && zip -9 -r rootfs.tar.gz.zip ./*rootfs.tar.gz && echo "rootfs.tar.gz拷贝成功" || echo "rootfs.tar.gz拷贝失败"
+        find openwrt/bin/targets/*/*/* -maxdepth 0 -name "sha*sums*" | xargs -i cp -a {} ./ && zip -9 -r shasums.zip ./sha*sums* && echo "shasums拷贝成功" || echo "shasums拷贝失败"
         echo "::set-env name=DATE::$(date "+%Y%m%d-%H%M")"
 
     - name: Upload Packages
@@ -140,10 +142,6 @@ jobs:
         GITHUB_TOKEN: ${{ secrets.TOKEN }}
       run: |
         cd openwrt/bin/targets/*/*
-        zip -9 -r openwrt-x86-64-combined-ext4.vmdk.zip openwrt-x86-64-combined-ext4.vmdk
-        zip -9 -r openwrt-x86-64-combined-ext4.vdi.zip openwrt-x86-64-combined-ext4.vdi
-        rm -rf *.vmdk *.vdi
-        rm -rf packages
         git init
         git config user.name "actions"
         git config user.email "actions@github.com"
@@ -168,38 +166,38 @@ jobs:
         draft: false
         prerelease: false
 
-    - name: Upload combined-squashfs
-      id: upload-combined-squashfs
+    - name: Upload generic-squashfs-combined
+      id: upload-generic-squashfs-combined
       if: success()
       uses: actions/upload-release-asset@master
       env:
         GITHUB_TOKEN: ${{ secrets.TOKEN }}
       with:
         upload_url: ${{ steps.create_release.outputs.upload_url }}
-        asset_path: ./combined-squashfs.zip
-        asset_name: combined-squashfs.zip
+        asset_path: ./generic-squashfs-combined.zip
+        asset_name: generic-squashfs-combined.zip
         asset_content_type: application/zip
 
-    - name: Upload generic-rootfs
-      id: upload-generic-rootfs
+    - name: Upload rootfs
+      id: upload-rootfs
       if: success()
       uses: actions/upload-release-asset@master
       env:
         GITHUB_TOKEN: ${{ secrets.TOKEN }}
       with:
         upload_url: ${{ steps.create_release.outputs.upload_url }}
-        asset_path: ./generic-rootfs.zip
-        asset_name: generic-rootfs.zip
+        asset_path: ./rootfs.tar.gz.zip
+        asset_name: rootfs.tar.gz.zip
         asset_content_type: application/zip
 
-    - name: Upload sha256sums
-      id: upload-sha256sums
+    - name: Upload shasums
+      id: upload-shasums
       if: success()
       uses: actions/upload-release-asset@master
       env:
         GITHUB_TOKEN: ${{ secrets.TOKEN }}
       with:
         upload_url: ${{ steps.create_release.outputs.upload_url }}
-        asset_path: ./sha256sums.zip
-        asset_name: sha256sums.zip
+        asset_path: ./shasums.zip
+        asset_name: shasums.zip
         asset_content_type: application/zip
