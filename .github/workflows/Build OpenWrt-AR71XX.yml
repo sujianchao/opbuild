@@ -17,20 +17,20 @@ on:
 #    paths:
 #      - 'x64.sh'
   schedule:
-    - cron: 0 9 * * 5
+    - cron: 30 4 * * 6
 #  watch:
 #    types: [started]
 
 env:
-  REPO_URL: https://github.com/openwrt/openwrt
+  REPO_URL: https://github.com/coolsnowwolf/lede
   REPO_BRANCH: master
-  CONFIG_FILE: .config
-  DIY_SH: x64.sh
+  CONFIG_FILE: ar71xx.config
+  DIY_SH: ar71xx.sh
   SSH_ACTIONS: false
   UPLOAD_BIN_DIR: true
   GITHUB_REPO: jsda/opbuild
-  Targets_TAG: x86_64
-  ARCH_TAG: x86_64
+  Targets_TAG: wdr3500
+  ARCH_TAG: ar71xx
   TZ: Asia/Shanghai
 
 jobs:
@@ -116,9 +116,6 @@ jobs:
         echo "======================="
         echo "$(ls -fl openwrt/bin/targets/*/*/*)"
         echo "======================="
-        find openwrt/bin/targets/*/*/* -maxdepth 0 -name "*generic-squashfs-combined.img.gz" | xargs -i cp -a {} ./ && zip -9 -r generic-squashfs-combined.zip ./*generic-squashfs-combined.img.gz && echo "generic-squashfs-combined.img.gz拷贝成功" || echo "generic-squashfs-combined.img.gz拷贝失败"
-        find openwrt/bin/targets/*/*/* -maxdepth 0 -name "*rootfs.tar.gz" | xargs -i cp -a {} ./ && zip -9 -r rootfs.tar.gz.zip ./*rootfs.tar.gz && echo "rootfs.tar.gz拷贝成功" || echo "rootfs.tar.gz拷贝失败"
-        find openwrt/bin/targets/*/*/* -maxdepth 0 -name "sha*sums*" | xargs -i cp -a {} ./ && zip -9 -r shasums.zip ./sha*sums* && echo "shasums拷贝成功" || echo "shasums拷贝失败"
         echo "::set-env name=DATE::$(date "+%Y%m%d-%H%M")"
 
     - name: Upload Packages
@@ -148,56 +145,3 @@ jobs:
         git add .
         git commit -m "$DATE-$Targets_TAG"
         git push --force --quiet "https://$GITHUB_TOKEN@github.com/$GITHUB_REPO.git" HEAD:targets/$Targets_TAG
-
-    - name: Get current tag
-      id: tag
-      if: success()
-      run: echo "::set-output name=tag::$DATE-$Targets_TAG"
-
-    - name: Create Release
-      id: create_release
-      if: success()
-      uses: actions/create-release@master
-      env:
-        GITHUB_TOKEN: ${{ secrets.TOKEN }}
-      with:
-        tag_name: ${{steps.tag.outputs.tag}}
-        release_name: ${{steps.tag.outputs.tag}}
-        draft: false
-        prerelease: false
-
-    - name: Upload generic-squashfs-combined
-      id: upload-generic-squashfs-combined
-      if: success()
-      uses: actions/upload-release-asset@master
-      env:
-        GITHUB_TOKEN: ${{ secrets.TOKEN }}
-      with:
-        upload_url: ${{ steps.create_release.outputs.upload_url }}
-        asset_path: ./generic-squashfs-combined.zip
-        asset_name: generic-squashfs-combined.zip
-        asset_content_type: application/zip
-
-    - name: Upload rootfs
-      id: upload-rootfs
-      if: success()
-      uses: actions/upload-release-asset@master
-      env:
-        GITHUB_TOKEN: ${{ secrets.TOKEN }}
-      with:
-        upload_url: ${{ steps.create_release.outputs.upload_url }}
-        asset_path: ./rootfs.tar.gz.zip
-        asset_name: rootfs.tar.gz.zip
-        asset_content_type: application/zip
-
-    - name: Upload shasums
-      id: upload-shasums
-      if: success()
-      uses: actions/upload-release-asset@master
-      env:
-        GITHUB_TOKEN: ${{ secrets.TOKEN }}
-      with:
-        upload_url: ${{ steps.create_release.outputs.upload_url }}
-        asset_path: ./shasums.zip
-        asset_name: shasums.zip
-        asset_content_type: application/zip
