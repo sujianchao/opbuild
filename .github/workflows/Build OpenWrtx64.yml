@@ -17,13 +17,13 @@ on:
 #    paths:
 #      - 'x64.sh'
   schedule:
-    - cron: 0 9 * * 5
+    - cron: 50 5 * * 7
 #  watch:
 #    types: [started]
 
 env:
   REPO_URL: https://github.com/openwrt/openwrt
-  REPO_BRANCH: master
+  REPO_BRANCH: openwrt-19.07
   CONFIG_FILE: .config
   DIY_SH: x64.sh
   SSH_ACTIONS: false
