@@ -66,25 +66,26 @@ jobs:
           sqlite3 libgpg-error-dev libxml2-dev autotools-dev dpkg-dev gcc-mingw-w64-x86-64 g++-mingw-w64-x86-64 \
           lzip libcppunit-dev libcurl4-openssl-dev libevent-dev ca-certificates libc6-dev-i386 \
           bin86 g++-multilib lib32z1-dev libz3-dev libgcrypt20-dev binutils-avr mt-st docutils-common \
-          manpages-dev libunistring-dev libelf-dev device-tree-compiler upx golang
+          manpages-dev libunistring-dev libelf-dev device-tree-compiler upx golang antlr3 gperf
         sudo -E apt-get -qq clean
 
     - name: Clone source code
-      run: git clone --depth 1 $REPO_URL -b $REPO_BRANCH openwrt
+      run: sudo mkdir -p /openwrt && sudo chmod 777 /openwrt && git clone --depth 1 $REPO_URL -b $REPO_BRANCH /openwrt
 
     - name: Update feeds
-      run: cd openwrt && ./scripts/feeds update -a
+      run: cd /openwrt && ./scripts/feeds update -a
 
     - name: Install feeds
-      run: cd openwrt && ./scripts/feeds install -a
+      run: cd /openwrt && ./scripts/feeds install -a
 
     - name: Load custom configuration
       run: |
-        [ -e files ] && mv files openwrt/files
-        [ -e $CONFIG_FILE ] && mv $CONFIG_FILE openwrt/.config
+        [ -e files ] && mv files /openwrt/files
+        [ -e $CONFIG_FILE ] && mv $CONFIG_FILE /openwrt/.config
+        [ -e $DIY_SH ] && mv $DIY_SH /openwrt/$DIY_SH
+        cd /openwrt
         chmod +x $DIY_SH
-        cd openwrt
-        ../$DIY_SH
+        ./$DIY_SH
         make defconfig
 
     - name: SSH connection to Actions
@@ -93,14 +94,14 @@ jobs:
 
     - name: Download package
       run: |
-        cd openwrt && make download -j8
+        cd /openwrt && make download -j8
         find dl -size -1024c -exec ls -l {} \;
         find dl -size -1024c -exec rm -f {} \;
 
     - name: Compile the firmware
       id: compile
       run: |
-        cd openwrt
+        cd /openwrt
         echo -e "$(nproc) thread compile"
         make -j$(nproc) || make -j1 V=s
         rm -rf bin/targets/*/*/packages
@@ -114,11 +115,11 @@ jobs:
         echo "======================="
         echo "$(df -h)"
         echo "======================="
-        echo "$(ls -fl openwrt/bin/targets/*/*/*)"
+        echo "$(ls -fl /openwrt/bin/targets/*/*/*)"
         echo "======================="
-        find openwrt/bin/targets/*/*/* -maxdepth 0 -name "*generic-squashfs-combined.img.gz" | xargs -i cp -a {} ./ && zip -9 -r generic-squashfs-combined.zip ./*generic-squashfs-combined.img.gz && echo "generic-squashfs-combined.img.gz拷贝成功" || echo "generic-squashfs-combined.img.gz拷贝失败"
-        find openwrt/bin/targets/*/*/* -maxdepth 0 -name "*rootfs.tar.gz" | xargs -i cp -a {} ./ && zip -9 -r rootfs.tar.gz.zip ./*rootfs.tar.gz && echo "rootfs.tar.gz拷贝成功" || echo "rootfs.tar.gz拷贝失败"
-        find openwrt/bin/targets/*/*/* -maxdepth 0 -name "sha*sums*" | xargs -i cp -a {} ./ && zip -9 -r shasums.zip ./sha*sums* && echo "shasums拷贝成功" || echo "shasums拷贝失败"
+        find /openwrt/bin/targets/*/*/* -maxdepth 0 -name "*generic-squashfs-combined.img.gz" | xargs -i cp -a {} ./ && zip -9 -r generic-squashfs-combined.zip ./*generic-squashfs-combined.img.gz && echo "generic-squashfs-combined.img.gz拷贝成功" || echo "generic-squashfs-combined.img.gz拷贝失败"
+        find /openwrt/bin/targets/*/*/* -maxdepth 0 -name "*rootfs.tar.gz" | xargs -i cp -a {} ./ && zip -9 -r rootfs.tar.gz.zip ./*rootfs.tar.gz && echo "rootfs.tar.gz拷贝成功" || echo "rootfs.tar.gz拷贝失败"
+        find /openwrt/bin/targets/*/*/* -maxdepth 0 -name "sha*sums*" | xargs -i cp -a {} ./ && zip -9 -r shasums.zip ./sha*sums* && echo "shasums拷贝成功" || echo "shasums拷贝失败"
         echo "::set-env name=DATE::$(date "+%Y%m%d-%H%M")"
 
     - name: Upload Packages
@@ -127,7 +128,7 @@ jobs:
       env:
         GITHUB_TOKEN: ${{ secrets.TOKEN }}
       run: |
-        cd openwrt/bin/packages/*/base
+        cd /openwrt/bin/packages/*/base
         git init
         git config user.name "actions"
         git config user.email "actions@github.com"
@@ -141,7 +142,7 @@ jobs:
       env:
         GITHUB_TOKEN: ${{ secrets.TOKEN }}
       run: |
-        cd openwrt/bin/targets/*/*
+        cd /openwrt/bin/targets/*/*
         git init
         git config user.name "actions"
         git config user.email "actions@github.com"
