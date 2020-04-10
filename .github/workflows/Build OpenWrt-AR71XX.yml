@@ -17,7 +17,7 @@ on:
 #    paths:
 #      - 'x64.sh'
   schedule:
-    - cron: 00 15 * * 1
+    - cron: 0 2 1 * *
 #  watch:
 #    types: [started]
 
@@ -80,7 +80,7 @@ jobs:
 
     - name: Load custom configuration
       run: |
-        [ -e files ] && mv files /openwrt/files
+#        [ -e files ] && mv files /openwrt/files
         [ -e $CONFIG_FILE ] && mv $CONFIG_FILE /openwrt/.config
         [ -e $DIY_SH ] && mv $DIY_SH /openwrt/$DIY_SH
         cd /openwrt

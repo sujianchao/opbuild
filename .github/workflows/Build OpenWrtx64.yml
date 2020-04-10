@@ -17,7 +17,7 @@ on:
 #    paths:
 #      - 'x64.sh'
   schedule:
-    - cron: 0 9 * * 5
+    - cron: 10 5 * * 5
 #  watch:
 #    types: [started]
 
@@ -117,8 +117,6 @@ jobs:
         echo "======================="
         echo "$(ls -fl /openwrt/bin/targets/*/*/*)"
         echo "======================="
-        find /openwrt/bin/targets/*/*/* -maxdepth 0 -name "*generic-squashfs-combined.img.gz" | xargs -i cp -a {} ./ && zip -9 -r generic-squashfs-combined.zip ./*generic-squashfs-combined.img.gz && echo "generic-squashfs-combined.img.gz拷贝成功" || echo "generic-squashfs-combined.img.gz拷贝失败"
-        find /openwrt/bin/targets/*/*/* -maxdepth 0 -name "*rootfs.tar.gz" | xargs -i cp -a {} ./ && zip -9 -r rootfs.tar.gz.zip ./*rootfs.tar.gz && echo "rootfs.tar.gz拷贝成功" || echo "rootfs.tar.gz拷贝失败"
         find /openwrt/bin/targets/*/*/* -maxdepth 0 -name "sha*sums*" | xargs -i cp -a {} ./ && zip -9 -r shasums.zip ./sha*sums* && echo "shasums拷贝成功" || echo "shasums拷贝失败"
         echo "::set-env name=DATE::$(date "+%Y%m%d-%H%M")"
 
@@ -166,30 +164,6 @@ jobs:
         release_name: ${{steps.tag.outputs.tag}}
         draft: false
         prerelease: false
-
-    - name: Upload generic-squashfs-combined
-      id: upload-generic-squashfs-combined
-      if: success()
-      uses: actions/upload-release-asset@master
-      env:
-        GITHUB_TOKEN: ${{ secrets.TOKEN }}
-      with:
-        upload_url: ${{ steps.create_release.outputs.upload_url }}
-        asset_path: ./generic-squashfs-combined.zip
-        asset_name: generic-squashfs-combined.zip
-        asset_content_type: application/zip
-
-    - name: Upload rootfs
-      id: upload-rootfs
-      if: success()
-      uses: actions/upload-release-asset@master
-      env:
-        GITHUB_TOKEN: ${{ secrets.TOKEN }}
-      with:
-        upload_url: ${{ steps.create_release.outputs.upload_url }}
-        asset_path: ./rootfs.tar.gz.zip
-        asset_name: rootfs.tar.gz.zip
-        asset_content_type: application/zip
 
     - name: Upload shasums
       id: upload-shasums
