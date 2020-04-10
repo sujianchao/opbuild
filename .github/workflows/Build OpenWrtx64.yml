@@ -70,20 +70,20 @@ jobs:
         sudo -E apt-get -qq clean
 
     - name: Clone source code
-      run: sudo mkdir -p /openwrt && sudo chmod 777 /openwrt && git clone --depth 1 $REPO_URL -b $REPO_BRANCH /openwrt
+      run: sudo mkdir -p /op/ && sudo chmod 777 /op/ && git clone --depth 1 $REPO_URL -b $REPO_BRANCH /op/openwrt
 
     - name: Update feeds
-      run: cd /openwrt && ./scripts/feeds update -a
+      run: cd /op/openwrt && ./scripts/feeds update -a
 
     - name: Install feeds
-      run: cd /openwrt && ./scripts/feeds install -a
+      run: cd /op/openwrt && ./scripts/feeds install -a
 
     - name: Load custom configuration
       run: |
-        [ -e files ] && mv files /openwrt/files
-        [ -e $CONFIG_FILE ] && mv $CONFIG_FILE /openwrt/.config
-        [ -e $DIY_SH ] && mv $DIY_SH /openwrt/$DIY_SH
-        cd /openwrt
+        [ -e files ] && mv files /op/openwrt/files
+        [ -e $CONFIG_FILE ] && mv $CONFIG_FILE /op/openwrt/.config
+        [ -e $DIY_SH ] && mv $DIY_SH /op/openwrt/$DIY_SH
+        cd /op/openwrt
         chmod +x $DIY_SH
         ./$DIY_SH
         make defconfig
@@ -94,14 +94,14 @@ jobs:
 
     - name: Download package
       run: |
-        cd /openwrt && make download -j8
+        cd /op/openwrt && make download -j8
         find dl -size -1024c -exec ls -l {} \;
         find dl -size -1024c -exec rm -f {} \;
 
     - name: Compile the firmware
       id: compile
       run: |
-        cd /openwrt
+        cd /op/openwrt
         echo -e "$(nproc) thread compile"
         make -j$(nproc) || make -j1 V=s
         rm -rf bin/targets/*/*/packages
@@ -115,9 +115,9 @@ jobs:
         echo "======================="
         echo "$(df -h)"
         echo "======================="
-        echo "$(ls -fl /openwrt/bin/targets/*/*/*)"
+        echo "$(ls -fl /op/openwrt/bin/targets/*/*/*)"
         echo "======================="
-        find /openwrt/bin/targets/*/*/* -maxdepth 0 -name "sha*sums*" | xargs -i cp -a {} ./ && zip -9 -r shasums.zip ./sha*sums* && echo "shasums拷贝成功" || echo "shasums拷贝失败"
+        find /op/openwrt/bin/targets/*/*/* -maxdepth 0 -name "sha*sums*" | xargs -i cp -a {} ./ && zip -9 -r shasums.zip ./sha*sums* && echo "shasums拷贝成功" || echo "shasums拷贝失败"
         echo "::set-env name=DATE::$(date "+%Y%m%d-%H%M")"
 
     - name: Upload Packages
@@ -126,7 +126,7 @@ jobs:
       env:
         GITHUB_TOKEN: ${{ secrets.TOKEN }}
       run: |
-        cd /openwrt/bin/packages/*/base
+        cd /op/openwrt/bin/packages/*/base
         git init
         git config user.name "actions"
         git config user.email "actions@github.com"
@@ -140,7 +140,7 @@ jobs:
       env:
         GITHUB_TOKEN: ${{ secrets.TOKEN }}
       run: |
-        cd /openwrt/bin/targets/*/*
+        cd /op/openwrt/bin/targets/*/*
         git init
         git config user.name "actions"
         git config user.email "actions@github.com"
