@@ -80,7 +80,6 @@ jobs:
 
     - name: Load custom configuration
       run: |
-#        [ -e files ] && mv files /openwrt/files
         [ -e $CONFIG_FILE ] && mv $CONFIG_FILE /openwrt/.config
         [ -e $DIY_SH ] && mv $DIY_SH /openwrt/$DIY_SH
         cd /openwrt
