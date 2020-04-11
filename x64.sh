@@ -104,8 +104,6 @@ CONFIG_PACKAGE_kmod-usb3=y
 EOF
 # 常用LuCI插件选择:
 cat >> .config <<EOF
-
-CONFIG_PACKAGE_luci-app-accesscontrol=y
 CONFIG_PACKAGE_luci-app-adbyby-plus=y
 CONFIG_PACKAGE_luci-app-adguardhome=y
 CONFIG_PACKAGE_luci-app-advanced-reboot=y
