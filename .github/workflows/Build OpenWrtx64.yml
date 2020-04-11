@@ -17,7 +17,7 @@ on:
 #    paths:
 #      - 'x64.sh'
   schedule:
-    - cron: 37 4 * * 5
+    - cron: 45 4 * * 6
 #  watch:
 #    types: [started]
 
