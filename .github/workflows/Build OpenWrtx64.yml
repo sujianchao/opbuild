@@ -17,7 +17,7 @@ on:
 #    paths:
 #      - 'x64.sh'
   schedule:
-    - cron: 30 16 * * 5
+    - cron: 37 4 * * 5
 #  watch:
 #    types: [started]
 
@@ -70,7 +70,7 @@ jobs:
         sudo -E apt-get -qq clean
 
     - name: Clone source code
-      run: sudo mkdir -p /op/ && sudo chmod 777 /op/ && git clone --depth 1 $REPO_URL -b $REPO_BRANCH /op/openwrt
+      run: sudo mkdir -p /op/ && sudo chown -R runner:runner /op/ && git clone --depth 1 $REPO_URL -b $REPO_BRANCH /op/openwrt
 
     - name: Update feeds
       run: cd /op/openwrt && ./scripts/feeds update -a
@@ -80,10 +80,12 @@ jobs:
 
     - name: Load custom configuration
       run: |
-        [ -e files ] && mv files /op/openwrt/files
-        [ -e $CONFIG_FILE ] && mv $CONFIG_FILE /op/openwrt/.config
-        [ -e $DIY_SH ] && mv $DIY_SH /op/openwrt/$DIY_SH
-        cd /op/openwrt
+        cf -rf ./* /op/
+        cd /op/
+        [ -e files ] && mv files openwrt/files
+        [ -e $CONFIG_FILE ] && mv $CONFIG_FILE openwrt/.config
+        [ -e $DIY_SH ] && mv $DIY_SH openwrt/$DIY_SH
+        cd openwrt
         chmod +x $DIY_SH
         ./$DIY_SH
         make defconfig
