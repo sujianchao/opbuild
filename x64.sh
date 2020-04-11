@@ -42,8 +42,7 @@ mv AdGuardHome.yaml files/etc/AdGuardHome
 #删除老版kcptun
 rm -rf package/feeds/packages/kcptun*
 #luci临时修正
-wget -q https://github.com/project-openwrt/luci/raw/master/luci.mk
-mv -f luci.mk feeds/luci/
+#wget -q https://github.com/project-openwrt/luci/raw/master/luci.mk && mv -f luci.mk feeds/luci/
 #中文包修正
 ../convert_translation.sh
 # 编译x64固件:
