@@ -39,6 +39,8 @@ mkdir -p files/etc/AdGuardHome
 mv AdGuardHome.yaml files/etc/AdGuardHome
 #备份特定文件
 #echo "/etc/AdGuardHome" >>  package/base-files/files/etc/sysupgrade.conf
+#删除老版kcptun
+rm -rf package/feeds/packages/kcptun*
 #中文包修正
 ../convert_translation.sh
 # 编译x64固件:

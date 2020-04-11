@@ -80,7 +80,7 @@ jobs:
 
     - name: Load custom configuration
       run: |
-        cf -rf ./* /op/
+        cp -rf ./* /op/
         cd /op/
         [ -e files ] && mv files openwrt/files
         [ -e $CONFIG_FILE ] && mv $CONFIG_FILE openwrt/.config

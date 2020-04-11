@@ -8,3 +8,5 @@ sed -i '/ustclug.org/d' package/lean/default-settings/files/zzz-default-settings
 sed -i 's/net.netfilter.nf_conntrack_max=16384/net.netfilter.nf_conntrack_max=105535/g' package/kernel/linux/files/sysctl-nf-conntrack.conf
 sed -i "s/bbr '0'/bbr '1'/g" package/*/luci-app-sfe/root/etc/config/sfe
 sed -i "s/wifi '0'/wifi '1'/g" package/*/luci-app-sfe/root/etc/config/sfe
+#删除老版kcptun
+rm -rf package/feeds/packages/kcptun*
