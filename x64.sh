@@ -7,9 +7,9 @@ git clone https://github.com/jsda/opdiy.git ../opdiy && mv -f ../opdiy/{lean,diy
 #aria2 patch
 #mv -f ../opdiy/patches/aria2/patches feeds/packages/net/aria2 && echo "aria2 patch添加成功" || echo "aria2 patch添加失败"
 #adbyby规则更新
-wget -O- https://easylist-downloads.adblockplus.org/easylistchina+easylist.txt | grep ^\|\|[^\*]*\^$ | sed -e 's:||:address\=\/:' -e 's:\^:/0\.0\.0\.0:' > /tmp/dnsmasq.adblock && rm -rf package/lean/luci-app-adbyby-plus/root/usr/share/adbyby/dnsmasq.adblock && mv /tmp/dnsmasq.adblock package/lean/luci-app-adbyby-plus/root/usr/share/adbyby/dnsmasq.adblock && echo "Adblock Plus Host List更新成功" || echo "Adblock Plus Host List更新失败"
-wget -O- https://adbyby.coding.net/p/xwhyc-rules/d/xwhyc-rules/git/raw/master/lazy.txt > /tmp/lazy.txt && rm -rf package/lean/adbyby/files/data/lazy.txt && mv /tmp/lazy.txt package/lean/adbyby/files/data/lazy.txt && echo "Lazy Rule更新成功" || echo "Lazy Rule更新失败"
-wget -O- https://adbyby.coding.net/p/xwhyc-rules/d/xwhyc-rules/git/raw/master/video.txt > /tmp/video.txt && rm -rf package/lean/adbyby/files/data/video.txt && mv /tmp/video.txt package/lean/adbyby/files/data/video.txt && echo "Video Rule更新成功" || echo "Video Rule更新失败"
+wget -qO- https://easylist-downloads.adblockplus.org/easylistchina+easylist.txt | grep ^\|\|[^\*]*\^$ | sed -e 's:||:address\=\/:' -e 's:\^:/0\.0\.0\.0:' > /tmp/dnsmasq.adblock && rm -rf package/lean/luci-app-adbyby-plus/root/usr/share/adbyby/dnsmasq.adblock && mv /tmp/dnsmasq.adblock package/lean/luci-app-adbyby-plus/root/usr/share/adbyby/dnsmasq.adblock && echo "Adblock Plus Host List更新成功" || echo "Adblock Plus Host List更新失败"
+wget -qO- https://adbyby.coding.net/p/xwhyc-rules/d/xwhyc-rules/git/raw/master/lazy.txt > /tmp/lazy.txt && rm -rf package/lean/adbyby/files/data/lazy.txt && mv /tmp/lazy.txt package/lean/adbyby/files/data/lazy.txt && echo "Lazy Rule更新成功" || echo "Lazy Rule更新失败"
+wget -qO- https://adbyby.coding.net/p/xwhyc-rules/d/xwhyc-rules/git/raw/master/video.txt > /tmp/video.txt && rm -rf package/lean/adbyby/files/data/video.txt && mv /tmp/video.txt package/lean/adbyby/files/data/video.txt && echo "Video Rule更新成功" || echo "Video Rule更新失败"
 #更改default-settings
 sed -i '/ustclug.org/d' package/lean/default-settings/files/zzz-default-settings
 sed -i '/openwrt_release/d' package/lean/default-settings/files/zzz-default-settings
@@ -27,20 +27,23 @@ sed -i "s/PKG_VERSION:=.*/PKG_VERSION:=$(getversion v2ray/v2ray-core)/g" package
 find package/lean/v2ray/ -maxdepth 2 -name "Makefile" | xargs -i sed -i "s/PKG_HASH:=.*/PKG_HASH:=skip/g" {}
 #AdGuardHome
 echo "AdGuardHome v$(getversion AdguardTeam/AdGuardHome)"
-wget https://github.com/AdguardTeam/AdGuardHome/releases/download/v$(getversion AdguardTeam/AdGuardHome)/AdGuardHome_linux_amd64.tar.gz
+wget -q https://github.com/AdguardTeam/AdGuardHome/releases/download/v$(getversion AdguardTeam/AdGuardHome)/AdGuardHome_linux_amd64.tar.gz
 tar -zxvf AdGuardHome*.tar.gz
 rm -rf  AdGuardHome*.tar.gz AdGuardHome/{*.txt,*.md}
 chmod +x AdGuardHome/AdGuardHome
 mkdir -p files/usr/bin
 mv -f AdGuardHome files/usr/bin
 #AdGuardHome配置
-wget https://raw.githubusercontent.com/jsda/opdiy/master/config/AdGuardHome/AdGuardHome.yaml
+wget -q https://raw.githubusercontent.com/jsda/opdiy/master/config/AdGuardHome/AdGuardHome.yaml
 mkdir -p files/etc/AdGuardHome
 mv AdGuardHome.yaml files/etc/AdGuardHome
 #备份特定文件
 #echo "/etc/AdGuardHome" >>  package/base-files/files/etc/sysupgrade.conf
 #删除老版kcptun
 rm -rf package/feeds/packages/kcptun*
+#luci临时修正
+wget -q https://github.com/project-openwrt/luci/raw/master/luci.mk
+mv -f luci.mk feeds/luci/
 #中文包修正
 ../convert_translation.sh
 # 编译x64固件:
