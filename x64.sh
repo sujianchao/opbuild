@@ -41,8 +41,6 @@ mv AdGuardHome.yaml files/etc/AdGuardHome
 #echo "/etc/AdGuardHome" >>  package/base-files/files/etc/sysupgrade.conf
 #删除老版kcptun
 rm -rf package/feeds/packages/kcptun*
-#luci临时修正
-#wget -q https://github.com/project-openwrt/luci/raw/master/luci.mk && mv -f luci.mk feeds/luci/
 #中文包修正
 ../convert_translation.sh
 # 编译x64固件:
@@ -56,7 +54,7 @@ CONFIG_TARGET_ROOTFS_TARGZ=y
 CONFIG_PACKAGE_kmod-kvm-amd=y
 CONFIG_PACKAGE_kmod-kvm-intel=y
 CONFIG_PACKAGE_kmod-kvm-x86=y
-CONFIG_TESTING_KERNEL=y
+#CONFIG_TESTING_KERNEL=y
 #
 #OpenWrt中文包
 CONFIG_LUCI_LANG_zh_Hans=y
