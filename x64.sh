@@ -14,6 +14,7 @@ wget -qO- https://adbyby.coding.net/p/xwhyc-rules/d/xwhyc-rules/git/raw/master/v
 sed -i '/ustclug.org/d' package/lean/default-settings/files/zzz-default-settings
 sed -i '/openwrt_release/d' package/lean/default-settings/files/zzz-default-settings
 sed -i '/lib\/lua/d' package/lean/default-settings/files/zzz-default-settings
+sed -i '/dispatcher//d' package/lean/default-settings/files/zzz-default-settings
 #其它
 sed -i 's/net.netfilter.nf_conntrack_max=16384/net.netfilter.nf_conntrack_max=105535/g' package/kernel/linux/files/sysctl-nf-conntrack.conf
 sed -i "s/bbr '0'/bbr '1'/g" package/*/luci-app-flowoffload/root/etc/config/flowoffload
@@ -54,7 +55,6 @@ CONFIG_TARGET_ROOTFS_TARGZ=y
 CONFIG_PACKAGE_kmod-kvm-amd=y
 CONFIG_PACKAGE_kmod-kvm-intel=y
 CONFIG_PACKAGE_kmod-kvm-x86=y
-#CONFIG_TESTING_KERNEL=y
 #
 #OpenWrt中文包
 CONFIG_LUCI_LANG_zh_Hans=y
