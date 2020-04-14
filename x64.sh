@@ -38,6 +38,8 @@ mv -f AdGuardHome files/usr/bin
 wget -q https://raw.githubusercontent.com/jsda/opdiy/master/config/AdGuardHome/AdGuardHome.yaml
 mkdir -p files/etc/AdGuardHome
 mv AdGuardHome.yaml files/etc/AdGuardHome
+#luci-app-adguardhome依赖
+sed -i "s/DEPENDS:=/DEPENDS:=+luci-base /g" package/*/luci-app-adguardhome/Makefile
 #备份特定文件
 #echo "/etc/AdGuardHome" >>  package/base-files/files/etc/sysupgrade.conf
 #删除老版kcptun
@@ -104,12 +106,12 @@ CONFIG_PACKAGE_kmod-usb3=y
 EOF
 # 常用LuCI插件选择:
 cat >> .config <<EOF
+CONFIG_PACKAGE_luci-base=y
 CONFIG_PACKAGE_luci-app-adbyby-plus=y
 CONFIG_PACKAGE_luci-app-adguardhome=y
 CONFIG_PACKAGE_luci-app-advanced-reboot=y
 CONFIG_PACKAGE_luci-app-autoreboot=y
 CONFIG_PACKAGE_luci-app-banip=y
-CONFIG_PACKAGE_luci-base=y
 CONFIG_PACKAGE_luci-app-commands=y
 CONFIG_PACKAGE_luci-app-cpufreq=y
 CONFIG_PACKAGE_luci-app-diag-core=y
