@@ -8,5 +8,7 @@ sed -i '/ustclug.org/d' package/lean/default-settings/files/zzz-default-settings
 sed -i 's/net.netfilter.nf_conntrack_max=16384/net.netfilter.nf_conntrack_max=105535/g' package/kernel/linux/files/sysctl-nf-conntrack.conf
 sed -i "s/bbr '0'/bbr '1'/g" package/*/luci-app-sfe/root/etc/config/sfe
 sed -i "s/wifi '0'/wifi '1'/g" package/*/luci-app-sfe/root/etc/config/sfe
-#删除老版kcptun
-rm -rf package/feeds/packages/kcptun*
+#下载DIY包
+git clone --depth 1 https://github.com/jsda/opdiy.git ../opdiy && mv -f ../opdiy/diy package && echo "DIY包添加成功" || echo "DIY包添加失败"
+#自定义源
+echo "src/gz opbuild https://github.com/jsda/opbuild/raw/packages/ar71xx" >> package/system/opkg/files/customfeeds.conf

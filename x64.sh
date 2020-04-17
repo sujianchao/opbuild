@@ -3,7 +3,7 @@ sed -i 's/lang auto/lang zh_cn/g' feeds/luci/modules/luci-base/root/etc/config/l
 #Lean tools
 svn co --force -q https://github.com/coolsnowwolf/lede/trunk/tools ../tools && svn revert -R ../tools && mv ../tools/{ucl,upx} tools && sed -i 'N;30a\tools-y += ucl upx' tools/Makefile && rm -rf ../tools && echo "Lean tools添加成功" || echo "Lean tools添加失败"
 #下载DIY包
-git clone https://github.com/jsda/opdiy.git ../opdiy && mv -f ../opdiy/{lean,diy} package && echo "DIY包添加成功" || echo "DIY包添加失败"
+git clone --depth 1 https://github.com/jsda/opdiy.git ../opdiy && mv -f ../opdiy/{lean,diy} package && echo "DIY包添加成功" || echo "DIY包添加失败"
 #aria2 patch
 #mv -f ../opdiy/patches/aria2/patches feeds/packages/net/aria2 && echo "aria2 patch添加成功" || echo "aria2 patch添加失败"
 #adbyby规则更新
@@ -43,7 +43,9 @@ sed -i "s/DEPENDS:=/DEPENDS:=+luci-base /g" package/*/luci-app-adguardhome/Makef
 #备份特定文件
 #echo "/etc/AdGuardHome" >>  package/base-files/files/etc/sysupgrade.conf
 #删除老版kcptun
-rm -rf package/feeds/packages/kcptun*
+[ -e package/lean/kcptun ] && rm -rf package/feeds/packages/kcptun*
+#自定义源
+echo "src/gz opbuild https://github.com/jsda/opbuild/raw/packages/x86_64" >> package/system/opkg/files/customfeeds.conf
 #中文包修正
 ../convert_translation.sh
 # 编译x64固件:
@@ -218,6 +220,12 @@ CONFIG_PACKAGE_virtio-console-helper=y
 CONFIG_PACKAGE_vnstat2=y
 CONFIG_PACKAGE_vnstati2=y
 CONFIG_PACKAGE_openssh-sftp-server=y
+CONFIG_PACKAGE_bash=y
+CONFIG_PACKAGE_pandownload-fake-server=y
+CONFIG_PACKAGE_luci-app-unblockmusic=y
+CONFIG_UnblockNeteaseMusic_Go=y
+CONFIG_PACKAGE_UnblockNeteaseMusic=m
+
 EOF
 # 取消编译VMware镜像以及镜像填充 (不要删除被缩进的注释符号):
 cat >> .config <<EOF
