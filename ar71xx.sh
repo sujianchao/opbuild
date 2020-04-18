@@ -10,5 +10,9 @@ sed -i "s/bbr '0'/bbr '1'/g" package/*/luci-app-sfe/root/etc/config/sfe
 sed -i "s/wifi '0'/wifi '1'/g" package/*/luci-app-sfe/root/etc/config/sfe
 #下载DIY包
 git clone --depth 1 https://github.com/jsda/opdiy.git ../opdiy && mv -f ../opdiy/diy package && echo "DIY包添加成功" || echo "DIY包添加失败"
+#luci-app-adguardhome依赖
+sed -i "s/DEPENDS:=/DEPENDS:=+luci-base /g" package/diy/luci-app-adguardhome/Makefile
+#luci-app-ssr-plus依赖
+sed -i "s/DEPENDS:=/DEPENDS:=+luci-base /g" package/diy/helloworld/luci-app-ssr-plus/Makefile
 #自定义源
 echo "src/gz opbuild https://github.com/jsda/opbuild/raw/packages/ar71xx" >> package/system/opkg/files/customfeeds.conf

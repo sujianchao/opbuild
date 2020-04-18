@@ -39,7 +39,9 @@ wget -q https://raw.githubusercontent.com/jsda/opdiy/master/config/AdGuardHome/A
 mkdir -p files/etc/AdGuardHome
 mv AdGuardHome.yaml files/etc/AdGuardHome
 #luci-app-adguardhome依赖
-sed -i "s/DEPENDS:=/DEPENDS:=+luci-base /g" package/*/luci-app-adguardhome/Makefile
+sed -i "s/DEPENDS:=/DEPENDS:=+luci-base /g" package/diy/luci-app-adguardhome/Makefile
+#luci-app-ssr-plus依赖
+sed -i "s/DEPENDS:=/DEPENDS:=+luci-base /g" package/diy/helloworld/luci-app-ssr-plus/Makefile
 #备份特定文件
 #echo "/etc/AdGuardHome" >>  package/base-files/files/etc/sysupgrade.conf
 #删除老版kcptun
