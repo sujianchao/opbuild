@@ -12,9 +12,9 @@ wget -qO- https://adbyby.coding.net/p/xwhyc-rules/d/xwhyc-rules/git/raw/master/l
 wget -qO- https://adbyby.coding.net/p/xwhyc-rules/d/xwhyc-rules/git/raw/master/video.txt > /tmp/video.txt && rm -rf package/lean/adbyby/files/data/video.txt && mv /tmp/video.txt package/lean/adbyby/files/data/video.txt && echo "Video Rule更新成功" || echo "Video Rule更新失败"
 #更改default-settings
 sed -i '/ustclug.org/d' package/lean/default-settings/files/zzz-default-settings
-sed -i '/openwrt_release/d' package/lean/default-settings/files/zzz-default-settings
+sed -i '/DISTRIB_REVISION=/d' package/lean/default-settings/files/zzz-default-settings
 sed -i '/lib\/lua/d' package/lean/default-settings/files/zzz-default-settings
-sed -i '/dispatcher//d' package/lean/default-settings/files/zzz-default-settings
+sed -i '/dispatcher/d' package/lean/default-settings/files/zzz-default-settings
 #其它
 sed -i 's/net.netfilter.nf_conntrack_max=16384/net.netfilter.nf_conntrack_max=105535/g' package/kernel/linux/files/sysctl-nf-conntrack.conf
 sed -i "s/bbr '0'/bbr '1'/g" package/*/luci-app-flowoffload/root/etc/config/flowoffload
@@ -137,6 +137,7 @@ CONFIG_PACKAGE_luci-app-ssr-plus_INCLUDE_V2ray_plugin=y
 CONFIG_PACKAGE_luci-app-flowoffload=y
 CONFIG_PACKAGE_luci-app-v2ray-server=y
 CONFIG_PACKAGE_luci-app-haproxy-tcp=y
+CONFIG_PACKAGE_luci-app-openclash=y
 CONFIG_PACKAGE_strongswan=y
 CONFIG_PACKAGE_luci-app-ipsec-vpnd=y
 CONFIG_PACKAGE_luci-app-mwan3helper=y
